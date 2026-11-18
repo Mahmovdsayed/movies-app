@@ -20,7 +20,7 @@ const GoogleButton = ({ isDark }: GoogleButtonProps) => {
                     label: "Sign-in failed",
                     description: error.message || "Could not sign in with Google",
                     variant: "danger",
-                    placement: "bottom",
+                    placement: "top",
                 });
                 return;
             }
@@ -28,14 +28,14 @@ const GoogleButton = ({ isDark }: GoogleButtonProps) => {
                 label: "Success",
                 description: "Signed in with Google successfully",
                 variant: "success",
-                placement: "bottom",
+                placement: "top",
             });
         } catch (err: unknown) {
             toast.show({
                 label: "Sign-in error",
                 description: err instanceof Error ? err.message : "An unexpected error occurred",
                 variant: "danger",
-                placement: "bottom",
+                placement: "top",
             });
         }
     };
