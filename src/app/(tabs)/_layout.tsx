@@ -1,33 +1,68 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
-import type { ComponentProps, JSX } from "react";
-import type { ColorValue } from "react-native";
+import { NativeTabs } from 'expo-router/native-tabs';
 
-type IoniconName = ComponentProps<typeof Ionicons>["name"];
+export const unstable_settings = {
+  anchor: 'home',
+};
 
-function TabIcon({ name, color }: { name: IoniconName; color: ColorValue }): JSX.Element {
-  // RN 0.88's `ColorValue` also admits `null` and processed numbers, which Ionicons rejects.
-  const iconColor = color === null || typeof color === "number" ? undefined : color;
-  return <Ionicons name={name} size={24} color={iconColor} />;
-}
-
-export default function TabsLayout(): JSX.Element {
+export default function Layout() {
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => <TabIcon name="home-outline" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => <TabIcon name="compass-outline" color={color} />,
-        }}
-      />
-    </Tabs>
+    <NativeTabs
+      tintColor="#0A84FF"
+      iconColor={{
+        default: '#8E8E93',
+        selected: '#0A84FF',
+      }}
+      blurEffect="systemChromeMaterialDark"
+      indicatorColor="rgba(10, 132, 255, 0.18)"
+      rippleColor="rgba(10, 132, 255, 0.25)"
+      labelVisibilityMode="unlabeled"
+    >
+      <NativeTabs.Trigger name="home">
+        <NativeTabs.Trigger.Icon
+          sf={{ default: 'house', selected: 'house.fill' }}
+          md="home"
+        />
+        <NativeTabs.Trigger.Label hidden>
+          Home
+        </NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="movies">
+        <NativeTabs.Trigger.Icon
+          sf={{ default: 'film', selected: 'film.fill' }}
+          md="movie"
+        />
+        <NativeTabs.Trigger.Label hidden>
+          Movies
+        </NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="tv-shows">
+        <NativeTabs.Trigger.Icon
+          sf={{ default: 'tv', selected: 'tv.fill' }}
+          md="tv"
+        />
+        <NativeTabs.Trigger.Label hidden>
+          TV Shows
+        </NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="search" role="search">
+        <NativeTabs.Trigger.Icon sf="magnifyingglass" md="search" />
+        <NativeTabs.Trigger.Label hidden>
+          Search
+        </NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="profile">
+        <NativeTabs.Trigger.Icon
+          sf={{ default: 'person', selected: 'person.fill' }}
+          md="person"
+        />
+        <NativeTabs.Trigger.Label hidden>
+          Profile
+        </NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+    </NativeTabs>
   );
 }
