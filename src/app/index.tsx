@@ -23,6 +23,16 @@ export default function Index() {
   }
 
   if (session) {
+    if (!session.user?.emailVerified) {
+      return (
+        <Redirect
+          href={{
+            pathname: '/(auth)/verify-otp',
+            params: { email: session.user.email, type: 'email-verification' },
+          }}
+        />
+      );
+    }
     return <Redirect href="/(tabs)/home" />;
   }
 

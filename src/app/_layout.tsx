@@ -25,7 +25,7 @@ export default function RootLayout(): JSX.Element {
   const router = useRouter();
 
   const { data: session, isPending } = authClient.useSession();
-  const isAuthed = Boolean(session);
+  const isAuthed = Boolean(session && session.user?.emailVerified);
 
   useEffect(() => {
     if (isPending) return;
@@ -34,12 +34,23 @@ export default function RootLayout(): JSX.Element {
     if (!firstSegment) return;
     const inAuthGroup = firstSegment === "(auth)";
 
+    if (session?.user && !session.user.emailVerified) {
+      const secondSegment = (segments as string[])[1];
+      if (secondSegment !== "verify-otp") {
+        router.replace({
+          pathname: "/(auth)/verify-otp",
+          params: { email: session.user.email, type: "email-verification" },
+        });
+      }
+      return;
+    }
+
     if (!isAuthed && !inAuthGroup) {
       router.replace("/(auth)");
     } else if (isAuthed && inAuthGroup) {
       router.replace("/(tabs)/home");
     }
-  }, [isAuthed, isPending, segments, router]);
+  }, [isAuthed, isPending, session, segments, router]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -48,7 +59,7 @@ export default function RootLayout(): JSX.Element {
           config={{
             toast: {
               defaultProps: {
-                placement: "bottom",
+                placement: "top",
               },
             },
           }}

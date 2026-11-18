@@ -19,7 +19,7 @@ A modern iOS React Native movie streaming app built with Expo. Browse and discov
 |---|---|
 | Framework | [Expo](https://expo.dev) ~58 |
 | Navigation | [Expo Router](https://expo.github.io/router) with Native Tabs |
-| Language | TypeScript 6 |
+| Language | TypeScript 7 |
 | Styling | [Uniwind](https://uniwind.dev) (Tailwind CSS for React Native) |
 | UI Components | [HeroUI Native](https://heroui.com) |
 | Auth Client | [Better Auth](https://better-auth.com) + [@better-auth/expo](https://better-auth.com) |
