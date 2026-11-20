@@ -5,6 +5,7 @@ import { SEARCH_SUGGESTION_ROWS } from "@/constants/search";
 export function SearchSuggestions() {
   return (
     <ScrollView
+      className="flex-1"
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
       keyboardDismissMode="on-drag"

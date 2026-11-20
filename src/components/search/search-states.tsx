@@ -4,6 +4,7 @@ import type { SearchStateProps } from "@/types/search";
 export function SearchCenteredState({ title, description }: SearchStateProps) {
   return (
     <ScrollView
+      className="flex-1"
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
       contentContainerClassName="grow items-center justify-center px-8"
@@ -19,6 +20,7 @@ export function SearchCenteredState({ title, description }: SearchStateProps) {
 export function SearchLoading() {
   return (
     <ScrollView
+      className="flex-1"
       contentInsetAdjustmentBehavior="automatic"
       contentContainerClassName="grow items-center justify-center"
     >

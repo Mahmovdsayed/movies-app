@@ -39,6 +39,7 @@ export function SearchDiscover({ filters }: SearchDiscoverProps) {
 
   return (
     <ScrollView
+      className="flex-1"
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ padding: SEARCH_GRID_PADDING, paddingBottom: 40, gap: 28 }}

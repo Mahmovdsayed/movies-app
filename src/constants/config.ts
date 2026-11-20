@@ -1,4 +1,12 @@
-export const API_BASE_URL = "http://localhost:3000";
+import Constants from "expo-constants";
+
+const API_PORT = 3000;
+
+const devHost = Constants.expoConfig?.hostUri?.split(":")[0];
+
+export const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL ??
+  (devHost ? `http://${devHost}:${API_PORT}` : `http://localhost:${API_PORT}`);
 
 export const BG_AUTH_IMAGE_URL =
   "https://img.magnific.com/free-photo/youth-group-with-pop-inspired-background_23-2151494744.jpg?semt=ais_hybrid&w=740&q=100";

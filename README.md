@@ -142,13 +142,18 @@ The app throws at startup if it is missing.
 > `EXPO_PUBLIC_*` variables are inlined into the JS bundle at build time, so they stay out of the
 > repository but are still readable inside a shipped app binary.
 
-Point the app at your backend in `src/constants/config.ts`:
+The backend address is derived automatically. In development the app reads the Metro host from
+`expo-constants` and points the API at the same machine on port `3000`, so a simulator and a
+physical phone both work without editing anything — `localhost` on a phone means the phone itself.
 
-```ts
-export const API_BASE_URL = "http://localhost:3000";
+To override it (a deployed backend, or a different port), set `EXPO_PUBLIC_API_URL`:
+
+```bash
+# .env
+EXPO_PUBLIC_API_URL=http://192.168.1.2:3000
 ```
 
-Both the Better Auth client and the REST client read this value, so it only needs changing once.
+Both the Better Auth client and the REST client read this value, so it only needs setting once.
 
 > Make sure the [movies-server](https://github.com/Mahmovdsayed/movies-server) is running, and that
 > its schema has been pushed, before starting the app.

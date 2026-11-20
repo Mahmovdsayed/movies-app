@@ -8,7 +8,10 @@
     "scheme": "movies-app",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "Connects to the local development API server on your network."
+      }
     },
     "android": {
       "adaptiveIcon": {

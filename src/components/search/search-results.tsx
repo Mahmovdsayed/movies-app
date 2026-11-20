@@ -60,6 +60,7 @@ export function SearchResults({ query, filters }: SearchResultsProps) {
 
   return (
     <ScrollView
+      className="flex-1"
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
       keyboardDismissMode="on-drag"
