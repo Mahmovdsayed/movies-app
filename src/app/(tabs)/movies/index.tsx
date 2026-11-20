@@ -1,11 +1,8 @@
-import { View, Text } from 'react-native';
+import { BrowseGrid } from "@/components/media";
+import { MOVIE_BROWSE } from "@/constants/browse";
 
-const MoviesScreen = () => {
-  return (
-    <View className="flex-1 items-center justify-center bg-background">
-      <Text className="text-foreground text-xl font-bold">Movies</Text>
-    </View>
-  );
-};
+const MoviesScreen = () => (
+  <BrowseGrid path={MOVIE_BROWSE.path} params={MOVIE_BROWSE.params} type="movie" />
+);
 
 export default MoviesScreen;

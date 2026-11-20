@@ -38,8 +38,3 @@ export interface SearchStateProps {
   title: string;
   description?: string;
 }
-
-export interface SearchResultCardProps {
-  item: MediaItem;
-  width: number;
-}

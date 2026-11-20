@@ -1,15 +1,11 @@
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
+
+import { browseScreenOptions } from "@/constants/headers";
 
 export default function MoviesLayout() {
   return (
     <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          title: 'Movies',
-          headerBlurEffect: 'systemMaterial',
-        }}
-      />
+      <Stack.Screen name="index" options={browseScreenOptions("Movies")} />
     </Stack>
   );
 }

@@ -1,11 +1,8 @@
-import { View, Text } from 'react-native';
+import { BrowseGrid } from "@/components/media";
+import { TV_BROWSE } from "@/constants/browse";
 
-const TvShowsScreen = () => {
-  return (
-    <View className="flex-1 items-center justify-center bg-background">
-      <Text className="text-foreground text-xl font-bold">TV Shows</Text>
-    </View>
-  );
-};
+const TvShowsScreen = () => (
+  <BrowseGrid path={TV_BROWSE.path} params={TV_BROWSE.params} type="tv" />
+);
 
 export default TvShowsScreen;

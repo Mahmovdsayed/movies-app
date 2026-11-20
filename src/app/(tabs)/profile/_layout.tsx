@@ -1,15 +1,11 @@
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
+
+import { detailScreenOptions } from "@/constants/headers";
 
 export default function ProfileLayout() {
   return (
     <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          title: 'Profile',
-          headerBlurEffect: 'systemMaterial',
-        }}
-      />
+      <Stack.Screen name="index" options={detailScreenOptions("Profile")} />
     </Stack>
   );
 }

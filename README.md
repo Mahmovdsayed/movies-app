@@ -1,17 +1,27 @@
 # Movies App
 
-A modern iOS React Native movie streaming app built with Expo. Browse and discover movies and TV shows with a clean, native-feeling UI that adapts to light and dark mode.
+A native-feeling iOS movie & TV browsing app built with Expo. Discover titles from TMDB, read
+episode-by-episode details, save favourites to your own account, and jump straight to a player —
+all with a UI that adapts to light and dark mode.
 
 ## Features
 
-- **Authentication** — Sign in with Google, Facebook, or Email via Better Auth
-- **Light / Dark Mode** — Fully themed UI including the splash screen
-- **Movie & TV Show Browsing** — Dedicated tabs for movies, TV shows, and search
-- **Search** — Quickly find content across the library
-- **Profile** — View session info and sign out
-- **Toast Notifications** — In-app success and error feedback on auth and logout actions
-- **Auth Guard** — Protects tab routes; unauthenticated users are redirected to auth screens with zero flash on cold start
-- **Animated Splash Screen** — Smooth, theme-aware branded entry screen
+- **Authentication** — Google, Facebook or Email via Better Auth, with OAuth in
+  `ASWebAuthenticationSession` and sessions in `expo-secure-store`
+- **Auth Guard** — Tab routes are protected; unauthenticated users land on the welcome screen with
+  no flash on cold start
+- **Home Feed** — Parallax hero carousel plus trending / popular rows, filterable by genre
+- **Browse Tabs** — Movies and TV Shows with genre filters and infinite scroll
+- **Search** — Debounced multi-search with a native filter sheet (type, genre, rating, year,
+  language); browse mode uses TMDB Discover when filters are active but no query is set
+- **Detail Screens** — Blurred artwork header with title, genres and actions, then section tabs for
+  Episodes (season picker, every episode playable), Similar, Cast and Details
+- **Episodes** — Every episode of a season listed with still, runtime and a per-episode Watch action
+- **Favourites** — Saved server-side per user; long-press any poster to add or remove
+- **People** — Actor pages with biography, social links and Movies / TV Shows carousels
+- **Context Menu** — Long-press any card for a native SwiftUI menu: favourite, details, or watch
+- **Light / Dark Mode** — Fully themed UI including splash screen and native headers
+- **Settings** — Account, version, TMDB attribution and sign out
 
 ## Tech Stack
 
@@ -21,61 +31,77 @@ A modern iOS React Native movie streaming app built with Expo. Browse and discov
 | Navigation     | [Expo Router](https://expo.github.io/router) with Native Tabs                                                      |
 | Language       | TypeScript 7                                                                                                       |
 | Styling        | [Uniwind](https://uniwind.dev) (Tailwind CSS for React Native)                                                     |
-| UI Components  | [HeroUI Native](https://heroui.com)                                                                                |
+| UI Components  | [HeroUI Native](https://heroui.com) + [@expo/ui](https://docs.expo.dev/versions/latest/sdk/ui/) (SwiftUI)          |
+| Data           | [TMDB](https://www.themoviedb.org/documentation/api) REST API                                                      |
 | Auth Client    | [Better Auth](https://better-auth.com) + [@better-auth/expo](https://better-auth.com)                              |
 | Secure Storage | [Expo SecureStore](https://docs.expo.dev/versions/latest/sdk/securestore/)                                         |
-| Animations     | [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) 4                                   |
+| Images         | [Expo Image](https://docs.expo.dev/versions/latest/sdk/image/) with a shared placeholder                           |
+| Blur / Motion  | [Expo Blur](https://docs.expo.dev/versions/latest/sdk/blur-view/), Expo Linear Gradient, Reanimated 4              |
 | Icons          | [@expo/vector-icons](https://docs.expo.dev/guides/icons/) (Ionicons) + SF Symbols / Material Icons via Native Tabs |
-| SVG            | [React Native SVG](https://github.com/software-mansion/react-native-svg)                                           |
-| Gestures       | [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/)                           |
+| Sheets         | [@gorhom/bottom-sheet](https://gorhom.github.io/react-native-bottom-sheet/)                                        |
 | Linting        | ESLint + Prettier                                                                                                  |
 
 ## Backend
 
-This app connects to the **movies-server** backend:  
+This app connects to the **movies-server** backend:
 [https://github.com/Mahmovdsayed/movies-server](https://github.com/Mahmovdsayed/movies-server)
 
-The backend handles:
+The backend handles authentication, session management, and the per-user favourites list.
 
-- Authentication (OAuth + Email via Better Auth)
-- Session management with database-backed state storage
-- API endpoints for movie and TV show data
+| Endpoint                      | Auth | Purpose                                               |
+| ----------------------------- | ---- | ----------------------------------------------------- |
+| `GET /v1/movies/liked`        | ✓    | The signed-in user's favourites                       |
+| `POST /v1/movies/liked`       | ✓    | Save a favourite — `409` if it is already saved       |
+| `DELETE /v1/movies/liked/:id` | ✓    | Remove a favourite by its **row id**, not the TMDB id |
+| `/api/auth/*`                 | —    | Better Auth handler (OAuth, email, sessions)          |
+
+Two details the client has to respect:
+
+- **`mediaType` is `"movie" | "series"`** on the server, while TMDB and the app use `"movie" | "tv"`.
+  The translation lives in `src/lib/api/favorites.ts` and nowhere else.
+- **`imageUrl` must be a valid URL**, so a title with no poster cannot be saved.
+
+> **Run `bunx drizzle-kit push` in movies-server before use.** The favourites table gained a nullable
+> `year` column; until it exists in the database, saving a favourite will fail. Rows saved before the
+> column existed read back `null` and simply omit the year.
 
 ## Project Structure
 
 ```
 src/
-├── app/
-│   ├── _layout.tsx           # Root layout — auth guard, theme, toast config
-│   ├── index.tsx             # Entry point — animated splash, session redirect
-│   ├── +not-found.tsx        # 404 screen
-│   ├── (auth)/               # Unauthenticated screens
-│   │   ├── index.tsx         # Welcome / onboarding screen
-│   │   ├── sign-in.tsx       # Email sign-in
-│   │   ├── sign-up.tsx       # Registration
-│   │   ├── forgot-password.tsx
-│   │   ├── reset-password.tsx
-│   │   └── verify-otp.tsx
-│   ├── (tabs)/               # Authenticated tab screens
-│   │   ├── home/             # Home feed
-│   │   ├── movies/           # Movie listings
-│   │   ├── tv-shows/         # TV show listings
-│   │   ├── search/           # Search
-│   │   └── profile/          # User profile + sign out
-│   ├── info/[type]/[id].tsx  # Movie / TV show detail screen
-│   └── settings/             # App settings
+├── app/                        # Expo Router routes
+│   ├── _layout.tsx             # Root layout — auth guard, theme, toast config
+│   ├── index.tsx               # Animated splash, session redirect
+│   ├── (auth)/                 # Welcome, sign-in, sign-up, forgot/reset password, verify OTP
+│   ├── (tabs)/
+│   │   ├── home/               # Hero carousel + trending rows
+│   │   ├── movies/             # Movie browse grid
+│   │   ├── tv-shows/           # TV browse grid
+│   │   ├── search/             # Search, filters and discover
+│   │   └── profile/            # Account summary
+│   ├── info/[type]/[id].tsx    # Detail screen with section tabs
+│   ├── person/[id].tsx         # Actor page
+│   ├── favorites/              # Saved titles
+│   └── settings/               # Account, about, sign out
 ├── components/
-│   ├── layout/
-│   │   └── SplashScreen.tsx  # Animated splash screen (light/dark aware)
-│   └── ui/
-│       └── auth/
-│           ├── GoogleButton.tsx
-│           ├── FacebookButton.tsx
-│           └── JoinViaEmailButton.tsx
-├── constants/
-│   └── config.ts             # App-wide config (API URLs, etc.)
-└── lib/
-    └── auth-client.ts        # Better Auth client setup
+│   ├── auth/                   # Auth screens' pieces
+│   ├── favorites/              # Favourite toggle
+│   ├── home/                   # Hero, genre chips, rows, cards
+│   ├── info/                   # Backdrop, heading, actions, tabs, episodes, details, cast
+│   ├── media/                  # Shared grid, card and context menu
+│   ├── person/                 # Profile header and social links
+│   ├── search/                 # Results, discover, filter sheet and states
+│   ├── skeletons/              # Loading placeholders
+│   └── ui/                     # RemoteImage, FactList, MaskedView, SwiftUI form controls
+├── constants/                  # Config, headers, theme, and per-screen layout values
+├── hooks/                      # useTmdb, pagination, favourites, media menu, filters
+├── lib/
+│   ├── api/                    # movies-server REST client
+│   ├── tmdb/                   # TMDB client, cache and normalisers
+│   ├── auth-client.ts          # Better Auth client setup
+│   └── favorites-store.ts      # Shared favourites state
+├── types/                      # Shared types
+└── validations/                # Zod schemas for auth forms
 ```
 
 ## Getting Started
@@ -85,8 +111,9 @@ src/
 - [Node.js](https://nodejs.org) 20+
 - [Bun](https://bun.sh) (recommended) or npm / yarn
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
-- iOS Simulator (macOS) or a physical iPhone, or the [Expo Go](https://expo.dev/go) app
+- iOS Simulator (macOS), a physical iPhone, or the [Expo Go](https://expo.dev/go) app
 - The [movies-server](https://github.com/Mahmovdsayed/movies-server) backend running locally
+- A TMDB v4 read access token
 
 ### Installation
 
@@ -98,7 +125,7 @@ bun install
 
 ### Environment Setup
 
-Create a `.env` file (git-ignored) from the template and add your TMDB v4 read access token:
+Create a `.env` file (git-ignored) from the template and add your TMDB token:
 
 ```bash
 cp .env.example .env
@@ -115,22 +142,16 @@ The app throws at startup if it is missing.
 > `EXPO_PUBLIC_*` variables are inlined into the JS bundle at build time, so they stay out of the
 > repository but are still readable inside a shipped app binary.
 
-Configure the backend URL in `src/lib/auth-client.ts`:
+Point the app at your backend in `src/constants/config.ts`:
 
 ```ts
-export const authClient = createAuthClient({
-  baseURL: "http://localhost:3000", // your movies-server URL
-  plugins: [
-    expoClient({
-      scheme: "movies-app",
-      storagePrefix: "movies-app",
-      storage: SecureStore,
-    }),
-  ],
-});
+export const API_BASE_URL = "http://localhost:3000";
 ```
 
-> Make sure the [movies-server](https://github.com/Mahmovdsayed/movies-server) is running before starting the app.
+Both the Better Auth client and the REST client read this value, so it only needs changing once.
+
+> Make sure the [movies-server](https://github.com/Mahmovdsayed/movies-server) is running, and that
+> its schema has been pushed, before starting the app.
 
 ### Running the App
 
@@ -145,6 +166,7 @@ bun ios         # Run on iOS simulator
 | ------------------- | --------------------------------- |
 | `bun start`         | Start the Expo development server |
 | `bun ios`           | Launch on iOS simulator           |
+| `bun android`       | Launch on Android                 |
 | `bun run lint`      | Run ESLint                        |
 | `bun run lint:fix`  | Auto-fix lint issues              |
 | `bun run format`    | Format code with Prettier         |
@@ -152,7 +174,7 @@ bun ios         # Run on iOS simulator
 
 ## Authentication Flow
 
-1. App launches — animated splash screen is shown while session is checked
+1. App launches — animated splash screen is shown while the session is checked
 2. If a valid session exists — user is redirected to `/(tabs)/home`
 3. If no session — user is redirected to `/(auth)` (welcome screen)
 4. Auth guard in `_layout.tsx` protects all tab routes from unauthenticated access
@@ -161,17 +183,30 @@ bun ios         # Run on iOS simulator
 
 ## Screens
 
-| Screen          | Route                     | Description                 |
-| --------------- | ------------------------- | --------------------------- |
-| Splash          | `/`                       | Animated entry, theme-aware |
-| Welcome         | `/(auth)`                 | Sign-in options             |
-| Sign In         | `/(auth)/sign-in`         | Email & password login      |
-| Sign Up         | `/(auth)/sign-up`         | Account registration        |
-| Forgot Password | `/(auth)/forgot-password` | Password reset request      |
-| Home            | `/(tabs)/home`            | Main content feed           |
-| Movies          | `/(tabs)/movies`          | Movie listings              |
-| TV Shows        | `/(tabs)/tv-shows`        | TV show listings            |
-| Search          | `/(tabs)/search`          | Content search              |
-| Profile         | `/(tabs)/profile`         | User info & sign out        |
-| Detail          | `/info/[type]/[id]`       | Movie or TV show detail     |
-| Settings        | `/settings`               | App settings                |
+| Screen          | Route                     | Description                            |
+| --------------- | ------------------------- | -------------------------------------- |
+| Splash          | `/`                       | Animated entry, theme-aware            |
+| Welcome         | `/(auth)`                 | Sign-in options                        |
+| Sign In         | `/(auth)/sign-in`         | Email & password login                 |
+| Sign Up         | `/(auth)/sign-up`         | Account registration                   |
+| Forgot Password | `/(auth)/forgot-password` | Password reset request                 |
+| Reset Password  | `/(auth)/reset-password`  | Set a new password                     |
+| Verify OTP      | `/(auth)/verify-otp`      | Email verification                     |
+| Home            | `/(tabs)/home`            | Hero carousel and media rows           |
+| Movies          | `/(tabs)/movies`          | Movie grid with genre filter           |
+| TV Shows        | `/(tabs)/tv-shows`        | TV grid with genre filter              |
+| Search          | `/(tabs)/search`          | Search, filters and discover           |
+| Profile         | `/(tabs)/profile`         | Account summary                        |
+| Detail          | `/info/[type]/[id]`       | Episodes, similar, cast and details    |
+| Person          | `/person/[id]`            | Actor biography, links and filmography |
+| Favourites      | `/favorites`              | Titles saved to your account           |
+| Settings        | `/settings`               | Account, about and sign out            |
+
+## Notes
+
+- **TMDB attribution** — This product uses the TMDB API but is not endorsed or certified by TMDB.
+  All artwork and metadata come from TMDB.
+- **Playback** — The Watch action opens an external embed for the title rather than streaming
+  in-app.
+- **Favourites without a poster** — TMDB leaves `poster_path` null for some titles; those cannot be
+  saved because the backend validates `imageUrl` as a URL.

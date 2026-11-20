@@ -1,8 +1,10 @@
 import type { SearchFilters } from "@/types/search";
 import type { MediaType, TmdbParams } from "@/types/tmdb";
 
-export const discoverPath = (type: MediaType) => type === "tv" ? "/discover/tv" : "/discover/movie";
-export const discoverTypes = (filters: SearchFilters): MediaType[] => filters.type === "all" ? ["movie", "tv"] : [filters.type];
+export const discoverPath = (type: MediaType) =>
+  type === "tv" ? "/discover/tv" : "/discover/movie";
+export const discoverTypes = (filters: SearchFilters): MediaType[] =>
+  filters.type === "all" ? ["movie", "tv"] : [filters.type];
 
 export const discoverParams = (type: MediaType, filters: SearchFilters): TmdbParams => {
   const params: TmdbParams = { sort_by: "popularity.desc" };

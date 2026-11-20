@@ -6,6 +6,7 @@ import type { MediaItem, MediaType } from "./tmdb";
 export interface GenreChipsProps {
   selected: number;
   onSelect: (id: number) => void;
+  type?: MediaType;
 }
 
 export interface HeroCarouselProps {

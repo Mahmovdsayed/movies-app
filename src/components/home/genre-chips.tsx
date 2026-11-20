@@ -13,11 +13,16 @@ import { memo, useMemo } from "react";
 import { ALL_GENRES } from "@/constants/home";
 import { SUPPORTS_GLASS } from "@/constants/platform";
 import { useTmdb } from "@/hooks";
+import { genreListPath } from "@/lib/tmdb";
 import type { GenreChipsProps } from "@/types/home";
 import type { TmdbGenre } from "@/types/tmdb";
 
-export const GenreChips = memo(function GenreChips({ selected, onSelect }: GenreChipsProps) {
-  const { data } = useTmdb<{ genres: TmdbGenre[] }>("/genre/movie/list");
+export const GenreChips = memo(function GenreChips({
+  selected,
+  onSelect,
+  type = "movie",
+}: GenreChipsProps) {
+  const { data } = useTmdb<{ genres: TmdbGenre[] }>(genreListPath(type));
   const accent = useThemeColor("accent");
   const foreground = useThemeColor("foreground");
 
@@ -27,9 +32,9 @@ export const GenreChips = memo(function GenreChips({ selected, onSelect }: Genre
   );
 
   return (
-    <Host style={{ height: 21 }}>
+    <Host style={{ height: 32 }}>
       <ScrollView axes="horizontal" showsIndicators={false}>
-        <HStack spacing={8} modifiers={[padding({ horizontal: 24, vertical: 4 })]}>
+        <HStack spacing={10} modifiers={[padding({ horizontal: 24, vertical: 4 })]}>
           {items.map((genre) => {
             const isSelected = genre.id === selected;
             return (
