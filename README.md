@@ -15,20 +15,20 @@ A modern iOS React Native movie streaming app built with Expo. Browse and discov
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | [Expo](https://expo.dev) ~58 |
-| Navigation | [Expo Router](https://expo.github.io/router) with Native Tabs |
-| Language | TypeScript 7 |
-| Styling | [Uniwind](https://uniwind.dev) (Tailwind CSS for React Native) |
-| UI Components | [HeroUI Native](https://heroui.com) |
-| Auth Client | [Better Auth](https://better-auth.com) + [@better-auth/expo](https://better-auth.com) |
-| Secure Storage | [Expo SecureStore](https://docs.expo.dev/versions/latest/sdk/securestore/) |
-| Animations | [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) 4 |
-| Icons | [@expo/vector-icons](https://docs.expo.dev/guides/icons/) (Ionicons) + SF Symbols / Material Icons via Native Tabs |
-| SVG | [React Native SVG](https://github.com/software-mansion/react-native-svg) |
-| Gestures | [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/) |
-| Linting | ESLint + Prettier |
+| Layer          | Technology                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Framework      | [Expo](https://expo.dev) ~58                                                                                       |
+| Navigation     | [Expo Router](https://expo.github.io/router) with Native Tabs                                                      |
+| Language       | TypeScript 7                                                                                                       |
+| Styling        | [Uniwind](https://uniwind.dev) (Tailwind CSS for React Native)                                                     |
+| UI Components  | [HeroUI Native](https://heroui.com)                                                                                |
+| Auth Client    | [Better Auth](https://better-auth.com) + [@better-auth/expo](https://better-auth.com)                              |
+| Secure Storage | [Expo SecureStore](https://docs.expo.dev/versions/latest/sdk/securestore/)                                         |
+| Animations     | [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) 4                                   |
+| Icons          | [@expo/vector-icons](https://docs.expo.dev/guides/icons/) (Ionicons) + SF Symbols / Material Icons via Native Tabs |
+| SVG            | [React Native SVG](https://github.com/software-mansion/react-native-svg)                                           |
+| Gestures       | [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/)                           |
+| Linting        | ESLint + Prettier                                                                                                  |
 
 ## Backend
 
@@ -36,6 +36,7 @@ This app connects to the **movies-server** backend:
 [https://github.com/Mahmovdsayed/movies-server](https://github.com/Mahmovdsayed/movies-server)
 
 The backend handles:
+
 - Authentication (OAuth + Email via Better Auth)
 - Session management with database-backed state storage
 - API endpoints for movie and TV show data
@@ -97,6 +98,23 @@ bun install
 
 ### Environment Setup
 
+Create a `.env` file (git-ignored) from the template and add your TMDB v4 read access token:
+
+```bash
+cp .env.example .env
+```
+
+```bash
+# .env
+EXPO_PUBLIC_TMDB_TOKEN=your_tmdb_v4_read_access_token_here
+```
+
+Get a token from [themoviedb.org → Settings → API](https://www.themoviedb.org/settings/api).
+The app throws at startup if it is missing.
+
+> `EXPO_PUBLIC_*` variables are inlined into the JS bundle at build time, so they stay out of the
+> repository but are still readable inside a shipped app binary.
+
 Configure the backend URL in `src/lib/auth-client.ts`:
 
 ```ts
@@ -123,14 +141,14 @@ bun ios         # Run on iOS simulator
 
 ## Development Scripts
 
-| Script | Description |
-|---|---|
-| `bun start` | Start the Expo development server |
-| `bun ios` | Launch on iOS simulator |
-| `bun run lint` | Run ESLint |
-| `bun run lint:fix` | Auto-fix lint issues |
-| `bun run format` | Format code with Prettier |
-| `bun run typecheck` | Run TypeScript type checking |
+| Script              | Description                       |
+| ------------------- | --------------------------------- |
+| `bun start`         | Start the Expo development server |
+| `bun ios`           | Launch on iOS simulator           |
+| `bun run lint`      | Run ESLint                        |
+| `bun run lint:fix`  | Auto-fix lint issues              |
+| `bun run format`    | Format code with Prettier         |
+| `bun run typecheck` | Run TypeScript type checking      |
 
 ## Authentication Flow
 
@@ -143,17 +161,17 @@ bun ios         # Run on iOS simulator
 
 ## Screens
 
-| Screen | Route | Description |
-|---|---|---|
-| Splash | `/` | Animated entry, theme-aware |
-| Welcome | `/(auth)` | Sign-in options |
-| Sign In | `/(auth)/sign-in` | Email & password login |
-| Sign Up | `/(auth)/sign-up` | Account registration |
-| Forgot Password | `/(auth)/forgot-password` | Password reset request |
-| Home | `/(tabs)/home` | Main content feed |
-| Movies | `/(tabs)/movies` | Movie listings |
-| TV Shows | `/(tabs)/tv-shows` | TV show listings |
-| Search | `/(tabs)/search` | Content search |
-| Profile | `/(tabs)/profile` | User info & sign out |
-| Detail | `/info/[type]/[id]` | Movie or TV show detail |
-| Settings | `/settings` | App settings |
+| Screen          | Route                     | Description                 |
+| --------------- | ------------------------- | --------------------------- |
+| Splash          | `/`                       | Animated entry, theme-aware |
+| Welcome         | `/(auth)`                 | Sign-in options             |
+| Sign In         | `/(auth)/sign-in`         | Email & password login      |
+| Sign Up         | `/(auth)/sign-up`         | Account registration        |
+| Forgot Password | `/(auth)/forgot-password` | Password reset request      |
+| Home            | `/(tabs)/home`            | Main content feed           |
+| Movies          | `/(tabs)/movies`          | Movie listings              |
+| TV Shows        | `/(tabs)/tv-shows`        | TV show listings            |
+| Search          | `/(tabs)/search`          | Content search              |
+| Profile         | `/(tabs)/profile`         | User info & sign out        |
+| Detail          | `/info/[type]/[id]`       | Movie or TV show detail     |
+| Settings        | `/settings`               | App settings                |

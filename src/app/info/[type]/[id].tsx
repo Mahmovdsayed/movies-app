@@ -5,10 +5,13 @@ export default function InfoScreen() {
   const { type, id } = useLocalSearchParams<{ type: string; id: string }>();
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>
-        Info: {type} - {id}
-      </Text>
-    </View>
+    <>
+
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>
+          Info: {type} - {id}
+        </Text>
+      </View>
+    </>
   );
 }

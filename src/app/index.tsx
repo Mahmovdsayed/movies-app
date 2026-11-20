@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Redirect } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { authClient } from '@/lib/auth-client';
-import SplashScreenUI from '@/components/layout/SplashScreen';
+import { Redirect } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect, useState } from "react";
+import { SplashScreenUI } from "@/components/layout";
+import { authClient } from "@/lib/auth-client";
 
 export default function Index() {
   const { data: session, isPending } = authClient.useSession();
@@ -27,8 +27,8 @@ export default function Index() {
       return (
         <Redirect
           href={{
-            pathname: '/(auth)/verify-otp',
-            params: { email: session.user.email, type: 'email-verification' },
+            pathname: "/(auth)/verify-otp",
+            params: { email: session.user.email, type: "email-verification" },
           }}
         />
       );

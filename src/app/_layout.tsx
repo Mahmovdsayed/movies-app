@@ -1,26 +1,18 @@
-import type { JSX } from "react";
-import { useEffect } from "react";
-import {
-  Stack,
-  ThemeProvider,
-  DarkTheme,
-  DefaultTheme,
-  useRouter,
-  useSegments,
-} from "expo-router";
+import { HeroUINativeProvider } from "heroui-native";
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { HeroUINativeProvider } from "heroui-native";
+import type { JSX } from "react";
+import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useUniwind } from "uniwind";
+import { useIsDark } from "@/hooks";
 import { authClient } from "@/lib/auth-client";
 import "../global.css";
 
-SplashScreen.preventAutoHideAsync().catch(() => { });
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout(): JSX.Element {
-  const { theme } = useUniwind();
-  const isDark = theme === "dark";
+  const isDark = useIsDark();
   const segments = useSegments();
   const router = useRouter();
 
